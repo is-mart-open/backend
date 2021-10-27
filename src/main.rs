@@ -17,6 +17,7 @@ async fn start(host: &str, port: u16) -> Result<()> {
     let mut app = tide::new();
     app.at("/search/:mart/:keyword").get(router::search);
     app.at("/info/:mart/:name").get(router::info);
+    app.at("/location/:lat/:lon").get(router::location);
     app.listen(format!("{}:{}", host, port)).await?;
     Ok(())
 }

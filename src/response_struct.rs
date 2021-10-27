@@ -13,3 +13,8 @@ pub struct Info {
     pub next_holiday: String,
     pub distance: Option<u16>
 }
+
+#[derive(Deserialize, Serialize)]
+pub struct Location {
+    pub result: Vec<Info>
+}
