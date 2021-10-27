@@ -1,4 +1,4 @@
-# is-mart-open-api
+# is-mart-open/backend
 
 [API] 오늘 마트 영업하나요?
 
