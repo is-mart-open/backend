@@ -7,6 +7,7 @@ pub struct Search {
 
 #[derive(Deserialize, Serialize)]
 pub struct Info {
+    pub base_date: String,
     pub name: String,
     pub start_time: String,
     pub end_time: String,

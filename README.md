@@ -58,10 +58,12 @@
 
   ```json
   {
+    "base_date": "2021-10-28",
     "name": "경산점",
     "open_time": "10:00",
     "close_time": "23:00",
-    "next_holiday": "2021/10/27",
+    "next_holiday": "2021-10-27",
+    "distance": null
   }
   ```
 
@@ -94,10 +96,11 @@
   {
     "result": [
       {
+        "base_date": "2021-10-28",
         "name": "경산점",
         "open_time": "10:00",
         "close_time": "23:00",
-        "next_holiday": "2021/10/27",
+        "next_holiday": "2021-10-27",
         "distance": "1254"
       }
     ]

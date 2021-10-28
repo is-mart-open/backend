@@ -36,7 +36,7 @@ pub async fn info(req: Request<()>) -> tide::Result<Body> {
 
     let row = sqlx::query!(
         r#"
-        SELECT mart_type_name,mart_name, start_time, end_time, next_holiday
+        SELECT base_date, mart_type_name,mart_name, start_time, end_time, next_holiday
         FROM   mart
         WHERE  mart_type = $1 AND mart_name LIKE $2;
         "#,
@@ -47,6 +47,7 @@ pub async fn info(req: Request<()>) -> tide::Result<Body> {
     .await?;
 
     Body::from_json(&Info {
+        base_date: row.base_date.to_string(),
         name: format!("{} {}", row.mart_type_name, row.mart_name),
         start_time: row.start_time.to_string(),
         end_time: row.end_time.to_string(),
@@ -81,10 +82,10 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
     let row = sqlx::query!(
         r#"
         SELECT * FROM (
-            SELECT mart_type_name, mart_name, start_time, end_time, next_holiday, 
-                  ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance
+            SELECT base_date, mart_type_name, mart_name, start_time, end_time, next_holiday, 
+                   ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance
             FROM   mart
-            WHERE ST_GeomFromText($2) ~ loc
+            WHERE  ST_GeomFromText($2) ~ loc
         ) as a
         ORDER BY distance
         "#,
@@ -98,6 +99,7 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
         result: row
             .iter()
             .map(|rec| Info {
+                base_date: rec.base_date.to_string(),
                 name: format!("{} {}", rec.mart_type_name, rec.mart_name),
                 start_time: rec.start_time.to_string(),
                 end_time: rec.end_time.to_string(),
