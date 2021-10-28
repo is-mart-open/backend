@@ -81,7 +81,7 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
     let row = sqlx::query!(
         r#"
         SELECT * FROM (
-            SELECT mart_name, start_time, end_time, next_holiday, 
+            SELECT mart_type_name, mart_name, start_time, end_time, next_holiday, 
                   ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance
             FROM   mart
             WHERE ST_GeomFromText($2) ~ loc
@@ -98,7 +98,7 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
         result: row
             .iter()
             .map(|rec| Info {
-                name: rec.mart_name.clone(),
+                name: format!("{} {}", rec.mart_type_name, rec.mart_name),
                 start_time: rec.start_time.to_string(),
                 end_time: rec.end_time.to_string(),
                 next_holiday: match rec.next_holiday {
