@@ -23,6 +23,7 @@ async fn start(host: &str, port: u16, database_url: &str) -> Result<()> {
     let mut app = tide::new();
     app.with(SQLxMiddleware::<Postgres>::new(database_url).await?);
 
+    app.at("/search/:mart").get(router::search);
     app.at("/search/:mart/:keyword").get(router::search);
     app.at("/info/:mart/:name").get(router::info);
     app.at("/location/:lat/:lon").get(router::location);
