@@ -105,5 +105,5 @@
 - Error Response
 
   ```json
-  { "error": "근처 100km 내 마트가 없습니다." }
+  { "error": "가까운 마트가 없습니다." }
   ```
