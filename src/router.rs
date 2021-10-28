@@ -55,15 +55,36 @@ pub async fn info(req: Request<()>) -> tide::Result<Body> {
 pub async fn location(req: Request<()>) -> tide::Result<Body> {
     let lat = req.param("lat")?;
     let lon = req.param("lon")?;
+
+    let mut pg_conn = req.sqlx_conn::<Postgres>().await;
+
+    let row = sqlx::query!(
+        r#"SELECT * FROM (
+            SELECT mart_name, start_time, end_time, next_holiday, 
+                  ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance
+            FROM   mart
+            LIMIT  10
+        ) as a
+        ORDER BY distance
+        "#,
+        format!("POINT({} {})", lon, lat))
+        .fetch_all(pg_conn.acquire().await?)
+        .await?;
+
     Body::from_json(&Location {
-        result: vec![
-            Info {
-                name: "이마트 가든5점".to_string(),
-                start_time: "10:00:00".to_string(),
-                end_time: "22:00:00".to_string(),
-                next_holiday: Some("2021/10/27".to_string()),
-                distance: Some(1254)
-            }
-        ]
+        result: row.iter().map(|rec| Info {
+            name: rec.mart_name.clone(),
+            start_time: rec.start_time.to_string(),
+            end_time: rec.end_time.to_string(),
+            next_holiday: match rec.next_holiday {
+                Some(date) => Some(date.to_string()),
+                None => None
+            },
+            distance: Some(match rec.distance {
+                Some(dist) => dist as u64,
+                None => 0
+            })
+        })
+        .collect()
     })
 }

@@ -11,7 +11,7 @@ pub struct Info {
     pub start_time: String,
     pub end_time: String,
     pub next_holiday: Option<String>,
-    pub distance: Option<u16>
+    pub distance: Option<u64>
 }
 
 #[derive(Deserialize, Serialize)]
