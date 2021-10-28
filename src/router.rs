@@ -7,14 +7,15 @@ use crate::response_struct::{Info, Location, Search};
 
 pub async fn search(req: Request<()>) -> tide::Result<Body> {
     let mart = req.param("mart")?;
-    let keyword = decode(req.param("keyword")?)?;
+    let keyword = decode(req.param("keyword").unwrap_or(""))?;
 
     let mut pg_conn = req.sqlx_conn::<Postgres>().await;
 
-    let row = sqlx::query!(
-        r#"SELECT mart_name
+    let row = sqlx::query!(r#"
+        SELECT mart_name
         FROM   mart
-        WHERE  mart_type = $1 AND mart_name LIKE $2;"#,
+        WHERE  mart_type = $1 AND mart_name LIKE $2;
+        "#,
         mart,
         format!("%{}%", keyword))
         .fetch_all(pg_conn.acquire().await?)
@@ -31,10 +32,11 @@ pub async fn info(req: Request<()>) -> tide::Result<Body> {
     
     let mut pg_conn = req.sqlx_conn::<Postgres>().await;
 
-    let row = sqlx::query!(
-        r#"SELECT mart_name, start_time, end_time, next_holiday
+    let row = sqlx::query!(r#"
+        SELECT mart_name, start_time, end_time, next_holiday
         FROM   mart
-        WHERE  mart_type = $1 AND mart_name LIKE $2;"#,
+        WHERE  mart_type = $1 AND mart_name LIKE $2;
+        "#,
         mart,
         name)
         .fetch_one(pg_conn.acquire().await?)
@@ -58,14 +60,14 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
 
     let mut pg_conn = req.sqlx_conn::<Postgres>().await;
 
-    let row = sqlx::query!(
-        r#"SELECT * FROM (
+    let row = sqlx::query!(r#"
+        SELECT * FROM (
             SELECT mart_name, start_time, end_time, next_holiday, 
                   ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance
             FROM   mart
-            LIMIT  10
         ) as a
         ORDER BY distance
+        LIMIT  10
         "#,
         format!("POINT({} {})", lon, lat))
         .fetch_all(pg_conn.acquire().await?)
