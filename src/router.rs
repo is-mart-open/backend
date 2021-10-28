@@ -36,7 +36,7 @@ pub async fn info(req: Request<()>) -> tide::Result<Body> {
 
     let row = sqlx::query!(
         r#"
-        SELECT mart_name, start_time, end_time, next_holiday
+        SELECT mart_type_name,mart_name, start_time, end_time, next_holiday
         FROM   mart
         WHERE  mart_type = $1 AND mart_name LIKE $2;
         "#,
@@ -47,7 +47,7 @@ pub async fn info(req: Request<()>) -> tide::Result<Body> {
     .await?;
 
     Body::from_json(&Info {
-        name: row.mart_name,
+        name: format!("{} {}", row.mart_type_name, row.mart_name),
         start_time: row.start_time.to_string(),
         end_time: row.end_time.to_string(),
         next_holiday: match row.next_holiday {
