@@ -59,8 +59,8 @@
   ```json
   {
     "name": "경산점",
-    "open_time": "10:00:00",
-    "close_time": "23:00:00",
+    "open_time": "10:00",
+    "close_time": "23:00",
     "next_holiday": "2021/10/27",
   }
   ```
@@ -93,8 +93,8 @@
     "result": [
       {
         "name": "경산점",
-        "open_time": "10:00:00",
-        "close_time": "23:00:00",
+        "open_time": "10:00",
+        "close_time": "23:00",
         "next_holiday": "2021/10/27",
         "distance": "1254"
       }
