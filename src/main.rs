@@ -20,6 +20,8 @@ fn main() -> Result<()> {
 }
 
 async fn start(host: &str, port: u16, database_url: &str) -> Result<()> {
+    tide::log::start();
+    
     let mut app = tide::new();
     app.with(SQLxMiddleware::<Postgres>::new(database_url).await?);
 
