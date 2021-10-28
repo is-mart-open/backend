@@ -87,7 +87,6 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
             WHERE ST_GeomFromText($2) ~ loc
         ) as a
         ORDER BY distance
-        LIMIT  10
         "#,
         format!("POINT({} {})", lon, lat),
         diagonal
