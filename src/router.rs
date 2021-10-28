@@ -59,8 +59,22 @@ pub async fn info(req: Request<()>) -> tide::Result<Body> {
 }
 
 pub async fn location(req: Request<()>) -> tide::Result<Body> {
-    let lat = req.param("lat")?;
-    let lon = req.param("lon")?;
+    let lat: f64 = req.param("lat")?.parse()?;
+    let lon: f64 = req.param("lon")?.parse()?;
+
+    let base = geoutils::Location::new(lat, lon);
+    let mbr_length = 20000.0;
+
+    let lat_diff = mbr_length / 2.0 / base.distance_to(&geoutils::Location::new(lat + 1.0, lon)).unwrap().meters();
+    let lon_diff = mbr_length / 2.0 / base.distance_to(&geoutils::Location::new(lat, lon + 1.0)).unwrap().meters();
+
+    let diagonal = format!(
+        "LINESTRING({} {}, {} {})",
+        lon - &lon_diff,
+        lat - &lat_diff,
+        lon + &lon_diff,
+        lat + &lat_diff
+    );
 
     let mut pg_conn = req.sqlx_conn::<Postgres>().await;
 
@@ -70,11 +84,13 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
             SELECT mart_name, start_time, end_time, next_holiday, 
                   ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance
             FROM   mart
+            WHERE ST_GeomFromText($2) ~ loc
         ) as a
         ORDER BY distance
         LIMIT  10
         "#,
-        format!("POINT({} {})", lon, lat)
+        format!("POINT({} {})", lon, lat),
+        diagonal
     )
     .fetch_all(pg_conn.acquire().await?)
     .await?;
