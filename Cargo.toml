@@ -12,3 +12,4 @@ eyre = "0.6.5"
 urlencoding = "2.1.0"
 sqlx = { version = "0.5.9", features = ["postgres", "runtime-async-std-native-tls", "time"] }
 tide-sqlx = "0.6.1"
+dotenv = "0.15.0"

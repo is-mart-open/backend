@@ -1080,6 +1080,7 @@ name = "is-mart-open-api"
 version = "0.1.0"
 dependencies = [
  "async-std",
+ "dotenv",
  "eyre",
  "serde",
  "sqlx",
