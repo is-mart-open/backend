@@ -1,12 +1,12 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize)]
-pub struct Search {
+pub struct SearchResponse {
     pub result: Vec<String>,
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct Info {
+pub struct InfoResponse {
     pub base_date: String,
     pub name: String,
     pub start_time: String,
@@ -16,6 +16,6 @@ pub struct Info {
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct Location {
-    pub result: Vec<Info>,
+pub struct LocationResponse {
+    pub result: Vec<InfoResponse>,
 }

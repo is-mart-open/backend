@@ -3,7 +3,7 @@ use tide::{Body, Request};
 use tide_sqlx::SQLxRequestExt;
 use urlencoding::decode;
 
-use crate::response_struct::{Info, Location, Search};
+use crate::response_struct::{InfoResponse, LocationResponse, SearchResponse};
 
 pub async fn search(req: Request<()>) -> tide::Result<Body> {
     let mart = req.param("mart")?;
@@ -23,7 +23,7 @@ pub async fn search(req: Request<()>) -> tide::Result<Body> {
     .fetch_all(pg_conn.acquire().await?)
     .await?;
 
-    Body::from_json(&Search {
+    Body::from_json(&SearchResponse {
         result: row.iter().map(|rec| rec.mart_name.clone()).collect(),
     })
 }
@@ -46,7 +46,7 @@ pub async fn info(req: Request<()>) -> tide::Result<Body> {
     .fetch_one(pg_conn.acquire().await?)
     .await?;
 
-    Body::from_json(&Info {
+    Body::from_json(&InfoResponse {
         base_date: row.base_date.to_string(),
         name: format!("{} {}", row.mart_type_name, row.mart_name),
         start_time: row.start_time.to_string(),
@@ -95,10 +95,10 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
     .fetch_all(pg_conn.acquire().await?)
     .await?;
 
-    Body::from_json(&Location {
+    Body::from_json(&LocationResponse {
         result: row
             .iter()
-            .map(|rec| Info {
+            .map(|rec| InfoResponse {
                 base_date: rec.base_date.to_string(),
                 name: format!("{} {}", rec.mart_type_name, rec.mart_name),
                 start_time: rec.start_time.to_string(),
