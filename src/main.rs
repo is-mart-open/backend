@@ -6,6 +6,7 @@ use eyre::Result;
 use sqlx::Postgres;
 use tide_sqlx::SQLxMiddleware;
 
+mod messages;
 mod response_struct;
 mod router;
 

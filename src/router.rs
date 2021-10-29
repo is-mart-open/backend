@@ -3,7 +3,7 @@ use tide::{Body, Request};
 use tide_sqlx::SQLxRequestExt;
 use urlencoding::decode;
 
-use crate::response_struct::{InfoResponse, LocationResponse, SearchResponse};
+use crate::{messages::Messages, response_struct::{ErrorResponse, InfoResponse, LocationResponse, SearchResponse}};
 
 pub async fn search(req: Request<()>) -> tide::Result<Body> {
     let mart = req.param("mart")?;
@@ -22,6 +22,12 @@ pub async fn search(req: Request<()>) -> tide::Result<Body> {
     )
     .fetch_all(pg_conn.acquire().await?)
     .await?;
+
+    if row.is_empty() {
+        return Body::from_json(&ErrorResponse {
+            error: Messages::EmptySearchResult
+        });
+    }
 
     Body::from_json(&SearchResponse {
         result: row.iter().map(|rec| rec.mart_name.clone()).collect(),
