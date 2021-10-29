@@ -1,6 +1,7 @@
-FROM lukemathwalker/cargo-chef:latest-rust-1.56.0-alpine3.14 AS chef
+FROM rust:alpine AS chef
 WORKDIR /app
 RUN apk add --no-cache openssl-dev
+RUN cargo install cargo-chef --locked
 
 FROM chef AS planner
 COPY . .
