@@ -1,6 +1,5 @@
 FROM rust AS chef
 WORKDIR /app
-RUN apk add --no-cache openssl-dev
 RUN cargo install cargo-chef
 
 FROM chef AS planner
