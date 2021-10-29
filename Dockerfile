@@ -1,6 +1,6 @@
 FROM rust AS builder
 WORKDIR /app
-RUN apt install -y build-essential
+RUN apt update && apt install -y build-essential
 COPY . .
 RUN cargo build --release
 
