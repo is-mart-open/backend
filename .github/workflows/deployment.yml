@@ -20,7 +20,7 @@ jobs:
           VERSION=edge
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REG#refs/tags/v}
+            VERSION=${GITHUB_REF#refs/tags/v}
           fi
           
           TAGS="--tag ${DOCKER_IMAGE}:${VERSION}"
@@ -37,7 +37,15 @@ jobs:
             ${TAGS} --file ./Dockerfile .
 
       - name: Setup Docker Buildx
-        uses: crazy-max/ghaction-docker-buildx@v3
+        uses: docker/setup-buildx-action@v1
+
+      - name: Inspect builder
+        run: |
+          echo "Name:      ${{ steps.buildx.outputs.name }}"
+          echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+          echo "Status:    ${{ steps.buildx.outputs.status }}"
+          echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+          echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
