@@ -20,7 +20,7 @@ jobs:
       - name: Prepare
         id: prepare
         run: |
-          DOCKER_IMAGE=is-mart-open/backend
+          DOCKER_IMAGE=ghcr.io/is-mart-open/backend
           VERSION=latest
           SHORTREF=${GITHUB_SHA::8}
 
