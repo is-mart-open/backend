@@ -52,18 +52,15 @@ jobs:
       - name: Install cross
         run: cargo install cross
 
-      - name: Build for x86_64-unknown-linux-gnu
-        run: cross build --target x86_64-unknown-linux-gnu --release
+      - name: Build for x86_64-unknown-linux-musl
+        run: cross build --target x86_64-unknown-linux-musl --release
 
-      - name: Build for aarch64-unknown-linux-gnu
-        run: cross build --target aarch64-unknown-linux-gnu --release
+      - name: Build for aarch64-unknown-linux-musl
+        run: cross build --target aarch64-unknown-linux-musl --release
 
       - name: Docker Buildx (build)
         run: |
-          docker buildx build \
-          --cache-from "type=local,src=/tmp/.buildx--cache" \
-          --cache-to "type=local,dest=/tmp/.buildx-cache" \
-          --output "type=image,push=false" ${{ steps.prepare.outputs.buildx_args }}
+          docker buildx build --output "type=image,push=false" ${{ steps.prepare.outputs.buildx_args }}
 
       - name: Log in to Container registry
         if: success()
