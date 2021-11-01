@@ -10,7 +10,7 @@ async-std = { version = "1.8.0", features = ["attributes"] }
 serde = { version = "1.0", features = ["derive"] }
 eyre = "0.6.5"
 urlencoding = "2.1.0"
-sqlx = { version = "0.5.9", features = ["postgres", "runtime-async-std-native-tls", "time", "offline"] }
+sqlx = { version = "0.5.9", features = ["postgres", "runtime-async-std-rustls", "time", "offline"] }
 tide-sqlx = "0.6.1"
 dotenv = "0.15.0"
 geoutils = "0.4.1"
