@@ -24,5 +24,5 @@ pub struct LocationResponse {
 
 #[derive(Deserialize, Serialize)]
 pub struct ErrorResponse {
-    pub error: Messages
+    pub error: Messages,
 }

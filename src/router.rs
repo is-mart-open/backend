@@ -3,7 +3,10 @@ use tide::{Body, Request};
 use tide_sqlx::SQLxRequestExt;
 use urlencoding::decode;
 
-use crate::{messages::Messages, response_struct::{ErrorResponse, InfoResponse, LocationResponse, SearchResponse}};
+use crate::{
+    messages::Messages,
+    response_struct::{ErrorResponse, InfoResponse, LocationResponse, SearchResponse},
+};
 
 pub async fn search(req: Request<()>) -> tide::Result<Body> {
     let mart = req.param("mart")?;
@@ -25,7 +28,7 @@ pub async fn search(req: Request<()>) -> tide::Result<Body> {
 
     if row.is_empty() {
         return Body::from_json(&ErrorResponse {
-            error: Messages::EmptySearchResult
+            error: Messages::EmptySearchResult,
         });
     }
 
@@ -72,8 +75,18 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
     let base = geoutils::Location::new(lat, lon);
     let mbr_length = 20000.0;
 
-    let lat_diff = mbr_length / 2.0 / base.distance_to(&geoutils::Location::new(lat + 1.0, lon)).unwrap().meters();
-    let lon_diff = mbr_length / 2.0 / base.distance_to(&geoutils::Location::new(lat, lon + 1.0)).unwrap().meters();
+    let lat_diff = mbr_length
+        / 2.0
+        / base
+            .distance_to(&geoutils::Location::new(lat + 1.0, lon))
+            .unwrap()
+            .meters();
+    let lon_diff = mbr_length
+        / 2.0
+        / base
+            .distance_to(&geoutils::Location::new(lat, lon + 1.0))
+            .unwrap()
+            .meters();
 
     let diagonal = format!(
         "LINESTRING({} {}, {} {})",
