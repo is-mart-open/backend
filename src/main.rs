@@ -4,6 +4,7 @@ use async_std::task;
 use dotenv::dotenv;
 use eyre::Result;
 use sqlx::Postgres;
+use tide::security::{CorsMiddleware, Origin};
 use tide_sqlx::SQLxMiddleware;
 
 mod messages;
@@ -22,9 +23,10 @@ fn main() -> Result<()> {
 
 async fn start(host: &str, port: u16, database_url: &str) -> Result<()> {
     tide::log::start();
-    
+
     let mut app = tide::new();
     app.with(SQLxMiddleware::<Postgres>::new(database_url).await?);
+    app.with(CorsMiddleware::new().allow_origin(vec!["localhost", "is-mart-open.btry.dev"]));
 
     app.at("/search/:mart").get(router::search);
     app.at("/search/:mart/:keyword").get(router::search);
