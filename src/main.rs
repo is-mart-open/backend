@@ -4,7 +4,7 @@ use async_std::task;
 use dotenv::dotenv;
 use eyre::Result;
 use sqlx::Postgres;
-use tide::security::{CorsMiddleware, Origin};
+use tide::security::{CorsMiddleware};
 use tide_sqlx::SQLxMiddleware;
 
 mod messages;
