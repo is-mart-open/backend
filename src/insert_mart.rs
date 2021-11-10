@@ -1,5 +1,3 @@
-#[allow(deprecated)]
-
 use serde_json::Value;
 use sqlx::{Acquire, Postgres, types::time::Date};
 use surf::http::mime;
@@ -18,6 +16,7 @@ pub async fn insert_emart(req: &Request<()>) -> eyre::Result<(), surf::Error> {
     let mut transaction = pg_conn.begin().await?;
     
     for data in response["dataList"].as_array().unwrap() {
+        #[allow(deprecated)]
         sqlx::query(&format!(
             "INSERT INTO mart (base_date, mart_type, mart_type_name, mart_name, loc, start_time, end_time, next_holiday)
             VALUES ('{today}', 'emart', '이마트', '{name}', ST_GeomFromText('POINT({y} {x})', 4326), '{open}', '{close}', '{holiday}')
@@ -53,6 +52,7 @@ pub async fn insert_traders(req: &Request<()>) -> eyre::Result<(), surf::Error> 
     let mut transaction = pg_conn.begin().await?;
     
     for data in response["dataList"].as_array().unwrap() {
+        #[allow(deprecated)]
         sqlx::query(&format!(
             "INSERT INTO mart (base_date, mart_type, mart_type_name, mart_name, loc, start_time, end_time, next_holiday)
             VALUES ('{today}', 'traders', '이마트 트레이더스', '{name}', ST_GeomFromText('POINT({y} {x})', 4326), '{open}', '{close}', '{holiday}')
