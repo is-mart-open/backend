@@ -1,5 +1,15 @@
 {
   "db": "PostgreSQL",
+  "3a267949d6a060dc6dbf6ddf54210c5e908e0a0ab0bd40b30588f952c8834163": {
+    "query": "\n            INSERT INTO mart (base_date, mart_type, mart_type_name, mart_name, loc, start_time, end_time, next_holiday)\n            VALUES ('2021-11-07', 'emart', '이마트', '00점', ST_GeomFromText('POINT(경도 위도)', 4326), '10:00', '22:00', NULL);\n            ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": []
+    }
+  },
   "4633e9db7873e900aa31f366099dc66e97dfa7d2d9652d6e0bdd1b37caa77bf3": {
     "query": "\n        SELECT mart_name\n        FROM   mart\n        WHERE  mart_type = $1 AND mart_name LIKE $2;\n        ",
     "describe": {

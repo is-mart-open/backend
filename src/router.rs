@@ -3,10 +3,7 @@ use tide::{Body, Request};
 use tide_sqlx::SQLxRequestExt;
 use urlencoding::decode;
 
-use crate::{
-    messages::Messages,
-    response_struct::{ErrorResponse, InfoResponse, LocationResponse, SearchResponse},
-};
+use crate::{insert_mart::{insert_emart, insert_traders}, messages::Messages, response_struct::{ErrorResponse, InfoResponse, LocationResponse, SearchResponse}};
 
 pub async fn search(req: Request<()>) -> tide::Result<Body> {
     let mart = req.param("mart")?;
@@ -133,4 +130,20 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
             })
             .collect(),
     })
+}
+
+pub async fn insert(req: Request<()>) -> tide::Result<String> {
+    let mart = req.param("mart")?;
+    
+    Ok(match mart {
+        "emart" => match insert_emart(&req).await {
+            Ok(_) => "OK".to_string(),
+            Err(e) => format!("{:?}", e),
+        },
+        "traders" => match insert_traders(&req).await {
+            Ok(_) => "OK".to_string(),
+            Err(e) => format!("{:?}", e),
+        },
+        _ => "Unsupported".to_string()
+        })
 }
