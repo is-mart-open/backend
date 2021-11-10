@@ -147,3 +147,7 @@ pub async fn insert(req: Request<()>) -> tide::Result<String> {
         _ => "Unsupported".to_string()
         })
 }
+
+pub async fn health(_: Request<()>) -> tide::Result<String> {
+    Ok("Ok".to_string())
+}

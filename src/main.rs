@@ -33,6 +33,7 @@ async fn start(host: &str, port: u16, database_url: &str) -> Result<()> {
     app.at("/search/:mart/:keyword").get(router::search);
     app.at("/info/:mart/:name").get(router::info);
     app.at("/location/:lat/:lon").get(router::location);
+    app.at("/health").get(router::health);
 
     app.at("/insert/:mart").get(router::insert);
 
