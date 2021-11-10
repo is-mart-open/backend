@@ -1,7 +1,9 @@
+#[allow(deprecated)]
+
 use serde_json::Value;
 use sqlx::{Acquire, Postgres, types::time::Date};
 use surf::http::mime;
-use tide::{Request, log::info};
+use tide::Request;
 use tide_sqlx::SQLxRequestExt;
 
 pub async fn insert_emart(req: &Request<()>) -> eyre::Result<(), surf::Error> {
