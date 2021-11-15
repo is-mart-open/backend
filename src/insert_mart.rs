@@ -18,7 +18,7 @@ pub async fn insert_emart(req: &Request<()>) -> eyre::Result<(), surf::Error> {
     for data in response["dataList"].as_array().unwrap() {
         #[allow(deprecated)]
         sqlx::query(&format!(
-            "INSERT INTO mart (base_date, mart_type, mart_type_name, mart_name, loc, start_time, end_time, next_holiday)
+            "INSERT INTO mart (base_date, mart_name, loc, start_time, end_time, next_holiday)
             VALUES ('{today}', '{name}', ST_GeomFromText('POINT({y} {x})', 4326), '{open}', '{close}', '{holiday}')
             ON CONFLICT (mart_name) 
             DO 
@@ -54,7 +54,7 @@ pub async fn insert_traders(req: &Request<()>) -> eyre::Result<(), surf::Error> 
     for data in response["dataList"].as_array().unwrap() {
         #[allow(deprecated)]
         sqlx::query(&format!(
-            "INSERT INTO mart (base_date, mart_type, mart_type_name, mart_name, loc, start_time, end_time, next_holiday)
+            "INSERT INTO mart (base_date, mart_name, loc, start_time, end_time, next_holiday)
             VALUES ('{today}', '{name}', ST_GeomFromText('POINT({y} {x})', 4326), '{open}', '{close}', '{holiday}')
             ON CONFLICT (mart_name) 
             DO 
