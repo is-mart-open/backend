@@ -29,9 +29,8 @@ async fn start(host: &str, port: u16, database_url: &str) -> Result<()> {
     app.with(SQLxMiddleware::<Postgres>::new(database_url).await?);
     app.with(CorsMiddleware::new().allow_origin(vec!["http://localhost:3000", "http://10.0.1.4:3000", "https://is-mart-open.btry.dev"]));
 
-    app.at("/search/:mart").get(router::search);
-    app.at("/search/:mart/:keyword").get(router::search);
-    app.at("/info/:mart/:name").get(router::info);
+    app.at("/marts").get(router::get_mart_list);
+    app.at("/marts/:name").get(router::get_mart_info);
     app.at("/location/:lat/:lon").get(router::location);
     app.at("/health").get(router::health);
 

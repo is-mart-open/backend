@@ -5,20 +5,15 @@ use urlencoding::decode;
 
 use crate::{insert_mart::{insert_emart, insert_traders}, messages::Messages, response_struct::{ErrorResponse, InfoResponse, LocationResponse, SearchResponse}};
 
-pub async fn search(req: Request<()>) -> tide::Result<Body> {
-    let mart = req.param("mart")?;
-    let keyword = decode(req.param("keyword").unwrap_or(""))?;
-
+pub async fn get_mart_list(req: Request<()>) -> tide::Result<Body> {
     let mut pg_conn = req.sqlx_conn::<Postgres>().await;
 
     let row = sqlx::query!(
         r#"
         SELECT mart_name
         FROM   mart
-        WHERE  mart_type = $1 AND mart_name LIKE $2;
+        ORDER  BY mart_name;
         "#,
-        mart,
-        format!("%{}%", keyword)
     )
     .fetch_all(pg_conn.acquire().await?)
     .await?;
@@ -34,19 +29,17 @@ pub async fn search(req: Request<()>) -> tide::Result<Body> {
     })
 }
 
-pub async fn info(req: Request<()>) -> tide::Result<Body> {
-    let mart = req.param("mart")?;
+pub async fn get_mart_info(req: Request<()>) -> tide::Result<Body> {
     let name = decode(req.param("name")?)?.to_string();
 
     let mut pg_conn = req.sqlx_conn::<Postgres>().await;
 
     let row = sqlx::query!(
         r#"
-        SELECT base_date, mart_type_name,mart_name, start_time, end_time, next_holiday
+        SELECT base_date, mart_name, start_time, end_time, next_holiday
         FROM   mart
-        WHERE  mart_type = $1 AND mart_name LIKE $2;
+        WHERE  mart_name = $1;
         "#,
-        mart,
         name
     )
     .fetch_one(pg_conn.acquire().await?)
@@ -54,7 +47,7 @@ pub async fn info(req: Request<()>) -> tide::Result<Body> {
 
     Body::from_json(&InfoResponse {
         base_date: row.base_date.to_string(),
-        name: format!("{} {}", row.mart_type_name, row.mart_name),
+        name: row.mart_name,
         start_time: row.start_time.to_string(),
         end_time: row.end_time.to_string(),
         next_holiday: match row.next_holiday {
@@ -98,7 +91,7 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
     let row = sqlx::query!(
         r#"
         SELECT * FROM (
-            SELECT base_date, mart_type_name, mart_name, start_time, end_time, next_holiday, 
+            SELECT base_date, mart_name, start_time, end_time, next_holiday, 
                    ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance
             FROM   mart
             WHERE  ST_GeomFromText($2) ~ loc
@@ -116,7 +109,7 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
             .iter()
             .map(|rec| InfoResponse {
                 base_date: rec.base_date.to_string(),
-                name: format!("{} {}", rec.mart_type_name, rec.mart_name),
+                name: rec.mart_name.clone(),
                 start_time: rec.start_time.to_string(),
                 end_time: rec.end_time.to_string(),
                 next_holiday: match rec.next_holiday {

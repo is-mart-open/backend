@@ -19,12 +19,12 @@ pub async fn insert_emart(req: &Request<()>) -> eyre::Result<(), surf::Error> {
         #[allow(deprecated)]
         sqlx::query(&format!(
             "INSERT INTO mart (base_date, mart_type, mart_type_name, mart_name, loc, start_time, end_time, next_holiday)
-            VALUES ('{today}', 'emart', '이마트', '{name}', ST_GeomFromText('POINT({y} {x})', 4326), '{open}', '{close}', '{holiday}')
-            ON CONFLICT (mart_type, mart_name) 
+            VALUES ('{today}', '{name}', ST_GeomFromText('POINT({y} {x})', 4326), '{open}', '{close}', '{holiday}')
+            ON CONFLICT (mart_name) 
             DO 
             UPDATE SET base_date='{today}', loc=ST_GeomFromText('POINT({y} {x})', 4326), start_time='{open}', end_time='{close}', next_holiday='{holiday}';",
             today=Date::today(),
-            name=data["NAME"].as_str().unwrap().replace("이마트 ", ""),
+            name=data["NAME"].as_str().unwrap(),
             y=data["MAP_Y"].as_str().unwrap(),
             x=data["MAP_X"].as_str().unwrap(),
             open=data["OPEN_SHOPPING_TIME"].as_str().unwrap(),
@@ -55,12 +55,12 @@ pub async fn insert_traders(req: &Request<()>) -> eyre::Result<(), surf::Error> 
         #[allow(deprecated)]
         sqlx::query(&format!(
             "INSERT INTO mart (base_date, mart_type, mart_type_name, mart_name, loc, start_time, end_time, next_holiday)
-            VALUES ('{today}', 'traders', '이마트 트레이더스', '{name}', ST_GeomFromText('POINT({y} {x})', 4326), '{open}', '{close}', '{holiday}')
-            ON CONFLICT (mart_type, mart_name) 
+            VALUES ('{today}', '{name}', ST_GeomFromText('POINT({y} {x})', 4326), '{open}', '{close}', '{holiday}')
+            ON CONFLICT (mart_name) 
             DO 
             UPDATE SET base_date='{today}', loc=ST_GeomFromText('POINT({y} {x})', 4326), start_time='{open}', end_time='{close}', next_holiday='{holiday}';",
             today=Date::today(),
-            name=data["NAME"].as_str().unwrap().replace("이마트 트레이더스 ", ""),
+            name=data["NAME"].as_str().unwrap(),
             y=data["MAP_Y"].as_str().unwrap(),
             x=data["MAP_X"].as_str().unwrap(),
             open=data["OPEN_SHOPPING_TIME"].as_str().unwrap(),
