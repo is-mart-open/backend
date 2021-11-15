@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 #[derive(Deserialize)]
 pub enum Messages {
     EmptySearchResult,
-    NotExistsMart,
     NotExistsMartNearby,
 }
 
@@ -14,7 +13,6 @@ impl Serialize for Messages {
     {
         serializer.serialize_str(match *self {
             Messages::EmptySearchResult => "검색 결과가 없어요",
-            Messages::NotExistsMart => "검색한 점포가 없어요",
             Messages::NotExistsMartNearby => "반경 10km 내 가까운 마트가 없어요",
         })
     }
