@@ -12,42 +12,28 @@
 
 - URL
 
-  `GET /search/:mart`
-
-  `GET /search/:mart/:keyword`
-
-- URL Params
-  
-  - `mart`: 마트 종류 (`emart`, `traders`, `homeplus`, `costco`, `emart_everyday`)
-  - `keyword`: 검색할 점포 이름
+  `GET /mart/list`
 
 - Success Response
 
   ```json
   {
     "result": [
-      "경산점",
-      "구미점",
-      "김천점"
+      "이마트 가든5점",
+      "이마트 가양점",
+      "이마트 검단점"
     ]
   }
-  ```
-
-- Error Response
-
-  ```json
-  { "error": "검색 결과가 없어요" }
   ```
 
 ### 지점 조회
 
 - URL
 
-  `GET /info/:mart/:name`
+  `GET /mart/:name`
 
 - URL Params
-  
-  - `mart`: 마트 종류 (`emart`, `traders`, `homeplus`, `costco`, `emart_everyday`)
+
   - `name`: 점포 이름
 
 - Success Response
@@ -75,7 +61,7 @@
 
 - URL
 
-  `GET /location/:lat/:lon`
+  `GET /mart/from-location?lat=:lat&lon=:lon`
 
 - URL Params
   
@@ -102,5 +88,5 @@
 - Error Response
 
   ```json
-  { "error": "가까운 마트가 없어요" }
+  { "error": "반경 10km 이내 가까운 마트가 없어요" }
   ```
