@@ -3,7 +3,7 @@ use tide::{Body, Request};
 use tide_sqlx::SQLxRequestExt;
 use urlencoding::decode;
 
-use crate::{insert_mart::{insert_emart, insert_traders}, messages::Messages, response_struct::{ErrorResponse, InfoResponse, LocationResponse, SearchResponse}};
+use crate::{insert_mart::{insert_emart, insert_traders}, messages::Messages, structs::{ErrorResponse, InfoResponse, LocationQuery, LocationResponse, SearchResponse}};
 
 pub async fn get_mart_list(req: Request<()>) -> tide::Result<Body> {
     let mut pg_conn = req.sqlx_conn::<Postgres>().await;
@@ -59,8 +59,7 @@ pub async fn get_mart_info(req: Request<()>) -> tide::Result<Body> {
 }
 
 pub async fn location(req: Request<()>) -> tide::Result<Body> {
-    let lat: f64 = req.param("lat")?.parse()?;
-    let lon: f64 = req.param("lon")?.parse()?;
+    let LocationQuery { lat, lon } = req.query()?;
 
     let base = geoutils::Location::new(lat, lon);
     let mbr_length = 20000.0;

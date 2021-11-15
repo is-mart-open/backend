@@ -2,6 +2,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::messages::Messages;
 
+#[derive(Deserialize)]
+pub struct LocationQuery {
+    pub lat: f64,
+    pub lon: f64,
+}
+
 #[derive(Deserialize, Serialize)]
 pub struct SearchResponse {
     pub result: Vec<String>,
