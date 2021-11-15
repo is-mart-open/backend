@@ -1,17 +1,7 @@
 {
   "db": "PostgreSQL",
-  "3a267949d6a060dc6dbf6ddf54210c5e908e0a0ab0bd40b30588f952c8834163": {
-    "query": "\n            INSERT INTO mart (base_date, mart_type, mart_type_name, mart_name, loc, start_time, end_time, next_holiday)\n            VALUES ('2021-11-07', 'emart', '이마트', '00점', ST_GeomFromText('POINT(경도 위도)', 4326), '10:00', '22:00', NULL);\n            ",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": []
-      },
-      "nullable": []
-    }
-  },
-  "4633e9db7873e900aa31f366099dc66e97dfa7d2d9652d6e0bdd1b37caa77bf3": {
-    "query": "\n        SELECT mart_name\n        FROM   mart\n        WHERE  mart_type = $1 AND mart_name LIKE $2;\n        ",
+  "6d458d5221b56fae1fe4d6566a6d032695d188362fb75901cfc826106a480f1b": {
+    "query": "\n        SELECT mart_name\n        FROM   mart\n        ORDER  BY mart_name;\n        ",
     "describe": {
       "columns": [
         {
@@ -21,18 +11,15 @@
         }
       ],
       "parameters": {
-        "Left": [
-          "Text",
-          "Text"
-        ]
+        "Left": []
       },
       "nullable": [
         false
       ]
     }
   },
-  "749b3a7150e547894cfd526f8c1bb87bf2712fb0f5f673fda9ff20c6a93b4ddc": {
-    "query": "\n        SELECT * FROM (\n            SELECT base_date, mart_type_name, mart_name, start_time, end_time, next_holiday, \n                   ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance\n            FROM   mart\n            WHERE  ST_GeomFromText($2) ~ loc\n        ) as a\n        ORDER BY distance\n        ",
+  "acc34165c27ffbb06abe0cdfa82d97f85be48b38ba08a434c109688a532b9d8f": {
+    "query": "\n        SELECT * FROM (\n            SELECT base_date, mart_name, start_time, end_time, next_holiday, \n                   ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance\n            FROM   mart\n            WHERE  ST_GeomFromText($2) ~ loc\n        ) as a\n        ORDER BY distance\n        ",
     "describe": {
       "columns": [
         {
@@ -42,31 +29,26 @@
         },
         {
           "ordinal": 1,
-          "name": "mart_type_name",
-          "type_info": "Varchar"
-        },
-        {
-          "ordinal": 2,
           "name": "mart_name",
           "type_info": "Varchar"
         },
         {
-          "ordinal": 3,
+          "ordinal": 2,
           "name": "start_time",
           "type_info": "Time"
         },
         {
-          "ordinal": 4,
+          "ordinal": 3,
           "name": "end_time",
           "type_info": "Time"
         },
         {
-          "ordinal": 5,
+          "ordinal": 4,
           "name": "next_holiday",
           "type_info": "Date"
         },
         {
-          "ordinal": 6,
+          "ordinal": 5,
           "name": "distance",
           "type_info": "Float8"
         }
@@ -82,14 +64,13 @@
         false,
         false,
         false,
-        false,
         true,
         null
       ]
     }
   },
-  "9d0f1880bb176e0a2b13f0c7dfa912ff1127d3a20ed62faa87637bf2dc01b504": {
-    "query": "\n        SELECT base_date, mart_type_name,mart_name, start_time, end_time, next_holiday\n        FROM   mart\n        WHERE  mart_type = $1 AND mart_name LIKE $2;\n        ",
+  "facf0b8b6609d4dc07761aa5941a6ed79dae5f953d7a7906f1a8b3e207f18485": {
+    "query": "\n        SELECT base_date, mart_name, start_time, end_time, next_holiday\n        FROM   mart\n        WHERE  mart_name = $1;\n        ",
     "describe": {
       "columns": [
         {
@@ -99,38 +80,31 @@
         },
         {
           "ordinal": 1,
-          "name": "mart_type_name",
-          "type_info": "Varchar"
-        },
-        {
-          "ordinal": 2,
           "name": "mart_name",
           "type_info": "Varchar"
         },
         {
-          "ordinal": 3,
+          "ordinal": 2,
           "name": "start_time",
           "type_info": "Time"
         },
         {
-          "ordinal": 4,
+          "ordinal": 3,
           "name": "end_time",
           "type_info": "Time"
         },
         {
-          "ordinal": 5,
+          "ordinal": 4,
           "name": "next_holiday",
           "type_info": "Date"
         }
       ],
       "parameters": {
         "Left": [
-          "Text",
           "Text"
         ]
       },
       "nullable": [
-        false,
         false,
         false,
         false,
