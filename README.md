@@ -34,19 +34,21 @@
 
 - URL Params
 
-  - `name`: 점포 이름
+  - `name`: 점포 이름 (`,` 로 구분하여 여러개의 점포 검색 가능)
 
 - Success Response
 
   ```json
-  {
-    "base_date": "2021-10-28",
-    "name": "이마트 경산점",
-    "open_time": "10:00",
-    "close_time": "23:00",
-    "next_holiday": "2021-10-27",
-    "distance": null
-  }
+  [
+    {
+      "base_date": "2021-10-28",
+      "name": "이마트 경산점",
+      "open_time": "10:00",
+      "close_time": "23:00",
+      "next_holiday": "2021-10-27",
+      "distance": null
+    }
+  ]
   ```
 
 - Error Response
