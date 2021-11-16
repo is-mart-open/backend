@@ -106,6 +106,7 @@ pub async fn location(req: Request<()>) -> tide::Result<Body> {
             FROM   mart
             WHERE  ST_GeomFromText($2) ~ loc
         ) as a
+        WHERE distance <= 10000
         ORDER BY distance
         "#,
         format!("POINT({} {})", lon, lat),
