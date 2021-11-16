@@ -30,7 +30,11 @@ pub async fn get_mart_list(req: Request<()>) -> tide::Result<Body> {
 }
 
 pub async fn get_mart_info(req: Request<()>) -> tide::Result<Body> {
-    let name = decode(req.param("name")?)?.to_string();
+    let name = decode(req.param("name")?)?
+        .to_string()
+        .split(",")
+        .map(|str| str.to_string())
+        .collect::<Vec<String>>();
 
     let mut pg_conn = req.sqlx_conn::<Postgres>().await;
 
@@ -38,24 +42,31 @@ pub async fn get_mart_info(req: Request<()>) -> tide::Result<Body> {
         r#"
         SELECT base_date, mart_name, start_time, end_time, next_holiday
         FROM   mart
-        WHERE  mart_name = $1;
+        WHERE  mart_name = ANY($1);
         "#,
-        name
+        &name[..]
     )
-    .fetch_one(pg_conn.acquire().await?)
+    .fetch_all(pg_conn.acquire().await?)
     .await?;
 
-    Body::from_json(&InfoResponse {
-        base_date: row.base_date.to_string(),
-        name: row.mart_name,
-        start_time: row.start_time.to_string(),
-        end_time: row.end_time.to_string(),
-        next_holiday: match row.next_holiday {
-            Some(date) => Some(date.to_string()),
-            None => None,
-        },
-        distance: None,
-    })
+    Body::from_json(
+        &row
+        .into_iter()
+        .map(|rec| {
+            InfoResponse {
+                base_date: rec.base_date.to_string(),
+                name: rec.mart_name,
+                start_time: rec.start_time.to_string(),
+                end_time: rec.end_time.to_string(),
+                next_holiday: match rec.next_holiday {
+                    Some(date) => Some(date.to_string()),
+                    None => None,
+                },
+                distance: None,
+            }
+        })
+        .collect::<Vec<InfoResponse>>()
+    )
 }
 
 pub async fn location(req: Request<()>) -> tide::Result<Body> {
