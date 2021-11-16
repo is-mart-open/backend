@@ -1,25 +1,51 @@
 {
   "db": "PostgreSQL",
-  "6d458d5221b56fae1fe4d6566a6d032695d188362fb75901cfc826106a480f1b": {
-    "query": "\n        SELECT mart_name\n        FROM   mart\n        ORDER  BY mart_name;\n        ",
+  "421c440e24cd1f0132abad50f99ff13a83d2852a52a43842718477d6195fe2a1": {
+    "query": "\n        SELECT base_date, mart_name, start_time, end_time, next_holiday\n        FROM   mart\n        WHERE  mart_name = ANY($1);\n        ",
     "describe": {
       "columns": [
         {
           "ordinal": 0,
+          "name": "base_date",
+          "type_info": "Date"
+        },
+        {
+          "ordinal": 1,
           "name": "mart_name",
           "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "start_time",
+          "type_info": "Time"
+        },
+        {
+          "ordinal": 3,
+          "name": "end_time",
+          "type_info": "Time"
+        },
+        {
+          "ordinal": 4,
+          "name": "next_holiday",
+          "type_info": "Date"
         }
       ],
       "parameters": {
-        "Left": []
+        "Left": [
+          "TextArray"
+        ]
       },
       "nullable": [
-        false
+        false,
+        false,
+        false,
+        false,
+        true
       ]
     }
   },
-  "acc34165c27ffbb06abe0cdfa82d97f85be48b38ba08a434c109688a532b9d8f": {
-    "query": "\n        SELECT * FROM (\n            SELECT base_date, mart_name, start_time, end_time, next_holiday, \n                   ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance\n            FROM   mart\n            WHERE  ST_GeomFromText($2) ~ loc\n        ) as a\n        ORDER BY distance\n        ",
+  "6cd4ea6db2ff60c285fc3969cc2be90214de255c22ad9d90e2070b592cd839e9": {
+    "query": "\n        SELECT * FROM (\n            SELECT base_date, mart_name, start_time, end_time, next_holiday, \n                   ST_DistanceSphere(ST_GeomFromText($1), loc) AS distance\n            FROM   mart\n            WHERE  ST_GeomFromText($2) ~ loc\n        ) as a\n        WHERE distance <= 10000\n        ORDER BY distance\n        ",
     "describe": {
       "columns": [
         {
@@ -69,47 +95,21 @@
       ]
     }
   },
-  "facf0b8b6609d4dc07761aa5941a6ed79dae5f953d7a7906f1a8b3e207f18485": {
-    "query": "\n        SELECT base_date, mart_name, start_time, end_time, next_holiday\n        FROM   mart\n        WHERE  mart_name = $1;\n        ",
+  "6d458d5221b56fae1fe4d6566a6d032695d188362fb75901cfc826106a480f1b": {
+    "query": "\n        SELECT mart_name\n        FROM   mart\n        ORDER  BY mart_name;\n        ",
     "describe": {
       "columns": [
         {
           "ordinal": 0,
-          "name": "base_date",
-          "type_info": "Date"
-        },
-        {
-          "ordinal": 1,
           "name": "mart_name",
           "type_info": "Varchar"
-        },
-        {
-          "ordinal": 2,
-          "name": "start_time",
-          "type_info": "Time"
-        },
-        {
-          "ordinal": 3,
-          "name": "end_time",
-          "type_info": "Time"
-        },
-        {
-          "ordinal": 4,
-          "name": "next_holiday",
-          "type_info": "Date"
         }
       ],
       "parameters": {
-        "Left": [
-          "Text"
-        ]
+        "Left": []
       },
       "nullable": [
-        false,
-        false,
-        false,
-        false,
-        true
+        false
       ]
     }
   }
