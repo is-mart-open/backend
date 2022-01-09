@@ -27,7 +27,7 @@ async fn start(host: &str, port: u16, database_url: &str) -> Result<()> {
 
     let mut app = tide::new();
     app.with(SQLxMiddleware::<Postgres>::new(database_url).await?);
-    app.with(CorsMiddleware::new().allow_origin(vec!["http://localhost:3000", "http://10.0.1.4:3000", "https://is-mart-open.btry.dev"]));
+    app.with(CorsMiddleware::new().allow_origin(vec!["http://localhost:3000", "http://10.0.1.4:3000", "https://is-mart-open.btry.dev", "https://martopen.kr"]));
 
     app.at("/mart/list").get(router::get_mart_list);
     app.at("/mart/:name").get(router::get_mart_info);
